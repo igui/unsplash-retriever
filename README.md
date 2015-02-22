@@ -34,16 +34,18 @@ Below are the supported options
 ## Building
 
 ### Linux
+
 1. ``cd /path/to/unsplash-retriever``
 2. Run ``qmake``
 3. Run ``make``
 4. Run ``./release/unsplash-retriever -t ~/somedir``
 
 ### Windows
-1  Open the [Developer Command Prompt]
+
+1.  Open the [Developer Command Prompt]
 2. ``cd /path/to/unsplash-retriever``
 3. ``qmake``
-4. ``make``
+4. ``nmake``
 5. Run ``release/unsplash-retriever.exe -t somedir``
  
 [Developer Command Prompt]: https://msdn.microsoft.com/en-us/library/ms229859%28v=vs.110%29.aspx
