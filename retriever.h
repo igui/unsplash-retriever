@@ -14,7 +14,7 @@ class Retriever : public QObject
 private:
     static const QString baseUrl;
     static const int parallelRequests;
-    static const u_int64_t magicResumeFile;
+    static const quint64 magicResumeFile;
 
     // internal
     int pendingPages;

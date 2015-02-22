@@ -13,15 +13,21 @@ int main(int argc, char *argv[])
     parser.addHelpOption();
     parser.addVersionOption();
 
-    parser.addOption(QCommandLineOption({"q", "quiet"}, "Hides messages and progress bars"));
-    parser.addOption(QCommandLineOption({"f", "force"}, "Overwrite existing files. By default download is cancelled when a existing photo is found on disk"));
-    parser.addOption(QCommandLineOption({"t", "target"}, "Copy download photos to <directory>.", "directory"));
-    parser.addOption(QCommandLineOption({"r", "resume"}, "Try to resume download. Reads downloaded.dat"));
+    auto quietOption = QCommandLineOption(QStringList() << "q" << "quiet",
+                                          "Hides messages and progress bars");
+    parser.addOption(quietOption);
+    auto forceOption = QCommandLineOption(QStringList() << "f" << "force",
+                                          "Overwrite existing files. By default download is cancelled when a existing photo is found on disk");
+    parser.addOption(forceOption);
+    auto targetOption = QCommandLineOption(QStringList() << "t" << "target", "Copy download photos to <directory>.", "directory");
+    parser.addOption(targetOption);
+    auto resumeOption = QCommandLineOption(QStringList() << "r" << "resume", "Try to resume download. Reads downloaded.dat");
+    parser.addOption(resumeOption);
 
 
     parser.process(a);
 
-    auto destination = parser.value("t");
+    auto destination = parser.value(targetOption);
 
     if(!QDir(destination).exists())
     {
@@ -29,7 +35,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    Retriever *retriever = new Retriever(&a, !parser.isSet("q"), parser.isSet("f"), parser.isSet("r"), destination);
+    Retriever *retriever = new Retriever(&a, !parser.isSet(quietOption), parser.isSet(forceOption), parser.isSet(resumeOption), destination);
 
     // This will cause the application to exit when
     // the task signals finished.

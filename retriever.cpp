@@ -6,7 +6,7 @@
 
 const QString Retriever::baseUrl = "https://unsplash.com/filter?&page=";
 const int Retriever::parallelRequests = 10;
-const u_int64_t Retriever::magicResumeFile = 0xa00df070;
+const quint64 Retriever::magicResumeFile = 0xa00df070;
 
 Retriever::Retriever(QObject *parent, bool showProgress, bool overwrite, bool resume, QString destination) :
     QObject(parent),
@@ -147,7 +147,7 @@ bool Retriever::photoExists(const RetrieverPhoto &photo)
 
     auto dir = QDir(destination);
     auto filterName = QString("%1.*").arg(photo.id);
-    auto files = dir.entryList({ filterName }, QDir::Files | QDir::NoSymLinks);
+    auto files = dir.entryList(QStringList() << filterName, QDir::Files | QDir::NoSymLinks);
     return !files.isEmpty();
 }
 
@@ -234,7 +234,7 @@ QList<RetrieverPhoto> Retriever::getPhotos(QNetworkReply *reply, htmlDocPtr doc)
             photo.url = QUrl(reinterpret_cast<char *>(absolutehref));
             res.append(photo);
 
-            delete absolutehref;
+            xmlFree(absolutehref);
         }
 
         return res;
@@ -333,7 +333,8 @@ void Retriever::restorePendingPhotos()
             QCoreApplication::exit(1);
             return;
         }
-        targetPhotos[id] = { id, QUrl(url) };
+        RetrieverPhoto photo = { id, QUrl(url) };
+        targetPhotos[id] = photo;
     }
 
     file.close();
