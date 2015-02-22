@@ -15,9 +15,7 @@ For resuming downloads you can use the ``-r`` option. Download info is stored in
 
 Below are the supported options
 
-``
-  -h, --help                Displays this help.
-  -v, --version             Displays version information.
+``shell
   -q, --quiet               Hides messages and progress bars
   -f, --force               Overwrite existing files. By default download is
 			    cancelled when a existing photo is found on disk
