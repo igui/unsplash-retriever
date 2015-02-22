@@ -4,7 +4,7 @@ A console utility for downloading images from [unsplash.com]
 [unsplash.com]: https://unsplash.com
 
 ## Download
-Download [latest](/releases/latest) release here.
+Download [latest](https://github.com/igui/unsplash-retriever/releases/latest) release here.
 
 ##Usage
 
