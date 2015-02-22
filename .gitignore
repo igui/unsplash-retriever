@@ -28,6 +28,14 @@
 # Directory Files (KDE)
 .directory
 
+# Makefiles
+Makefile
+Makefile.*
+
+# build dirs
+release
+debug
+
 # Executables
 *.exe
 *.out
