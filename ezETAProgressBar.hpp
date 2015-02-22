@@ -38,6 +38,7 @@ public:
         #endif
         startTime = osQueryPerfomance();
         setPct(0);
+        std::cout.rdbuf()->pubsetbuf(0, 0);
     }
 
     void operator++() {
@@ -98,6 +99,14 @@ public:
 
     // Set 0.0-1.0, where 1.0 equals 100%.
     void setPct(float Pct) {
+        #ifdef WIN32
+        {
+            std::string eraser;
+            eraser.append(width, '\b');
+            std::cout << eraser;
+        }
+        #endif
+
         endTime = osQueryPerfomance();
         char pctstr[5];
         sprintf(pctstr, "%3d%%", (int)(100*Pct));
@@ -120,7 +129,9 @@ public:
             if (out.size() < width)
                 out.append(width-out.size(),' ');
 
-            out.append("\n");
+            #ifndef WIN32
+                out.append("\n");
+            #endif
             std::cout << out;
             return;
         } else {
@@ -140,7 +151,9 @@ public:
         if (out.size() < width)
             out.append(width-out.size(),' ');
 
-        out.append("\r");
+        #ifndef WIN32
+            out.append("\r");
+        #endif
         std::cout << out;
         std::cout.flush();
     }

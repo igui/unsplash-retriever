@@ -15,6 +15,7 @@ private:
     static const QString baseUrl;
     static const int parallelRequests;
     static const quint64 magicResumeFile;
+    static const int maxPhotoTries;
 
     // internal
     int pendingPages;
@@ -38,13 +39,14 @@ private slots:
     void replyFinished(QNetworkReply *, int);
     void replyFinished(QNetworkReply *, RetrieverPhoto);
 private:
-    bool checkReply(QNetworkReply *reply, int &counter);
+    bool checkReply(QNetworkReply *reply, int &counter, bool exitIfError);
     void requestPage(int pageNumber);
     void downloadAllTargetPhotos();
     void requestPhoto(const RetrieverPhoto& photo);
     bool photoExists(const RetrieverPhoto& photo);
     void savePendingPhotos();
     void restorePendingPhotos();
+    void removePendingPhotos();
     static htmlDocPtr parseReply(QNetworkReply *);
     static QList<RetrieverPhoto> getPhotos(QNetworkReply *, htmlDocPtr doc);
 signals:

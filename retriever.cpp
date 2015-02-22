@@ -7,6 +7,7 @@
 const QString Retriever::baseUrl = "https://unsplash.com/filter?&page=";
 const int Retriever::parallelRequests = 10;
 const quint64 Retriever::magicResumeFile = 0xa00df070;
+const int Retriever::maxPhotoTries = 5;
 
 Retriever::Retriever(QObject *parent, bool showProgress, bool overwrite, bool resume, QString destination) :
     QObject(parent),
@@ -35,9 +36,13 @@ void Retriever::run()
     if(showProgress)
     {
         if(resume){
-            std::cout << "Resuming" << std::endl;
             restorePendingPhotos();
             int nPhotos = targetPhotos.keys().length();
+            if(!nPhotos){
+                emit finished();
+                return;
+            }
+
             std::cout << "Downloading " << nPhotos << " photo(s)" << std::endl;
             progressBar = new ez::ezETAProgressBar(nPhotos);
             progressBar->start();
@@ -45,11 +50,10 @@ void Retriever::run()
                 requestPhoto(photo);
         } else {
             std::cout << "Parsing pages" << std::endl;
+            for(int i = 1; i <= parallelRequests; ++i)
+                requestPage(i);
         }
     }
-
-    for(int i = 1; i <= parallelRequests; ++i)
-        requestPage(i);
 }
 
 void Retriever::requestPage(int pageNumber)
@@ -68,13 +72,14 @@ void Retriever::requestPhoto(const RetrieverPhoto& photo)
 }
 
 
-bool Retriever::checkReply(QNetworkReply *reply, int &counter)
+bool Retriever::checkReply(QNetworkReply *reply, int &counter, bool exitIfError = true)
 {
     --counter;
 
     if(reply->error())
     {
         qCritical("Error while getting %s: %s", qPrintable(reply->request().url().toString()), qPrintable(reply->errorString()));
+        if(exitIfError)
         QCoreApplication::exit(1);
         return false;
     }
@@ -83,7 +88,7 @@ bool Retriever::checkReply(QNetworkReply *reply, int &counter)
 
 void Retriever::replyFinished(QNetworkReply *reply, int pageNumber)
 {
-    if(!checkReply(reply, pendingPages))
+    if(!checkReply(reply, pendingPages, true))
         return;
 
     htmlDocPtr doc = NULL;
@@ -251,8 +256,14 @@ QList<RetrieverPhoto> Retriever::getPhotos(QNetworkReply *reply, htmlDocPtr doc)
 
 void Retriever::replyFinished(QNetworkReply *reply, RetrieverPhoto photo)
 {
-    if(!checkReply(reply, pendingPhotos))
+    if(!checkReply(reply, pendingPhotos, false)){
+        ++photo.tries;
+        if(photo.tries > maxPhotoTries)
+            QCoreApplication::exit(1);
+        else
+            requestPhoto(photo);
         return;
+    }
 
     auto requestUrl = reply->request().url();
     auto redirectUrl = reply->attribute(QNetworkRequest::RedirectionTargetAttribute).toUrl();
@@ -299,9 +310,21 @@ void Retriever::savePendingPhotos()
     file.close();
 }
 
+void Retriever::removePendingPhotos()
+{
+    QFile file(QDir(destination).filePath("downloaded.dat"));
+    file.remove();
+}
+
 void Retriever::restorePendingPhotos()
 {
     QFile file(QDir(destination).filePath("downloaded.dat"));
+
+    if(!file.exists()){
+        qWarning("Warning: No resume file found");
+        return;
+    }
+
     file.open(QIODevice::ReadOnly);
     QDataStream in(&file);
 
@@ -333,7 +356,7 @@ void Retriever::restorePendingPhotos()
             QCoreApplication::exit(1);
             return;
         }
-        RetrieverPhoto photo = { id, QUrl(url) };
+        RetrieverPhoto photo = { id, QUrl(url), 0 };
         targetPhotos[id] = photo;
     }
 
