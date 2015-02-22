@@ -15,13 +15,10 @@ For resuming downloads you can use the ``-r`` option. Download info is stored in
 
 Below are the supported options
 
-``shell
-  -q, --quiet               Hides messages and progress bars
-  -f, --force               Overwrite existing files. By default download is
-			    cancelled when a existing photo is found on disk
-  -t, --target <directory>  Copy download photos to <directory>.
-  -r, --resume              Try to resume download. Reads downloaded.dat
-``
+* ``-q, --quiet               Hides messages and progress bars``
+* ``-f, --force               Overwrite existing files. By default download is			    cancelled when a existing photo is found on disk``
+* ``-t, --target <directory>  Copy download photos to <directory>.``
+* ``-r, --resume              Try to resume download. Reads downloaded.dat``
 
 ## Requirements for building
 * Linux (Windows support is WIP)
