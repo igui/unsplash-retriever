@@ -21,21 +21,32 @@ Below are the supported options
 * ``-r, --resume              Try to resume download. Reads downloaded.dat``
 
 ## Requirements for building
-* Linux (Windows support is WIP)
+* [Visual Studio] (on windows)
 * [qmake]
 * [Qt 5.x] Development packages 
 * [libxml2] development packages
 
+[Visual Studio]: http://www.visualstudio.com/
 [qmake]: http://doc.qt.io/qt-5/qmake-manual.html
 [Qt 5.x]: http://www.qt.io/download/
 [libxml2]: http://xmlsoft.org/
 
 ## Building
 
-1. Run qmake
-2. ./unsplash-retriever
-3. Wait until downloads the whole repo
+### Linux
+1. ``cd /path/to/unsplash-retriever``
+2. Run ``qmake``
+3. Run ``make``
+4. Run ``./release/unsplash-retriever -t ~/somedir``
+
+### Windows
+1  Open the [Developer Command Prompt]
+2. ``cd /path/to/unsplash-retriever``
+3. ``qmake``
+4. ``make``
+5. Run ``release/unsplash-retriever.exe -t somedir``
  
+[Developer Command Prompt]: https://msdn.microsoft.com/en-us/library/ms229859%28v=vs.110%29.aspx
  
 ## Contributing
 
