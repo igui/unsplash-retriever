@@ -3,6 +3,9 @@ A console utility for downloading images from [unsplash.com]
 
 [unsplash.com]: https://unsplash.com
 
+## Download
+Download [latest](releases/latest) release here.
+
 ##Usage
 
 Just run ``unsplash-retriever [options]`` (or .exe on Windows)
