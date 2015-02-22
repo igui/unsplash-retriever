@@ -22,6 +22,12 @@
 *.a
 *.lib
 
+# QtCreator Droyect files
+*.pro.user
+
+# Directory Files (KDE)
+.directory
+
 # Executables
 *.exe
 *.out
